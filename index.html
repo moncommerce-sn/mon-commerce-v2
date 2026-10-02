@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mon Commerce</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+header {
+    background: #14503B;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2 {
+    margin-top: 0;
+    color: #14503B;
+}
+
+input,
+select,
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+button {
+    background: #14503B;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.stat {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.stat strong {
+    display: block;
+    font-size: 25px;
+    margin-top: 8px;
+    color: #14503B;
+}
+
+.product-item,
+.sale-item {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0;
+}
+
+.product-item:last-child,
+.sale-item:last-child {
+    border-bottom: none;
+}
+
+.danger {
+    color: #c0392b;
+    font-weight: bold;
+}
+
+.success {
+    color: #16803c;
+    font-weight: bold;
+}
+
+.small {
+    font-size: 14px;
+    color: #666;
+}
+
+#scanner {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+}
+</style>
+
+<!-- Scanner code-barres -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+</head>
+
+<body>
+
+<header>
+    <h1>Mon Commerce</h1>
+    <p>Gestion simple de votre commerce</p>
+</header>
+
+<div class="container">
+
+    <!-- TABLEAU DE BORD -->
+    <div class="card">
+        <h2>📊 Tableau de bord</h2>
+
+        <div class="dashboard">
+
+            <div class="stat">
+                Ventes aujourd'hui
+                <strong id="dailySales">0 F</strong>
+            </div>
+
+            <div class="stat">
+                Ventes du mois
+                <strong id="monthlySales">0 F</strong>
+            </div>
+
+            <div class="stat">
+                Marge
+                <strong id="totalProfit">0 F</strong>
+            </div>
+
+            <div class="stat">
+                Nombre de ventes
+                <strong id="salesCount">0</strong>
+            </div>
+
+            <div class="stat">
+                Produits
+                <strong id="productsCount">0</strong>
+            </div>
+
+            <div class="stat">
+                Stock total
+                <strong id="stockCount">0</strong>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- AJOUTER PRODUIT -->
+    <div class="card">
+
+        <h2>📦 Ajouter un produit</h2>
+
+        <input
+            type="text"
+            id="productName"
+            placeholder="Nom du produit"
+        >
+
+        <input
+            type="text"
+            id="productBarcode"
+            placeholder="Code-barres (facultatif)"
+        >
+
+        <input
+            type="number"
+            id="purchasePrice"
+            placeholder="Prix d'achat"
+        >
+
+        <input
+            type="number"
+            id="productStock"
+            placeholder="Stock initial"
+        >
+
+        <input
+            type="text"
+            id="productCategory"
+            placeholder="Catégorie (facultatif)"
+        >
+
+        <input
+            type="text"
+            id="productUnit"
+            placeholder="Unité : pièce, kg, litre..."
+        >
+
+        <button onclick="addProduct()">
+            Ajouter le produit
+        </button>
+
+    </div>
+
+
+    <!-- RECHERCHE -->
+    <div class="card">
+
+        <h2>🔎 Rechercher un produit</h2>
+
+        <input
+            type="text"
+            id="searchProduct"
+            placeholder="Rechercher par nom ou code-barres..."
+            oninput="displayProducts()"
+        >
+
+    </div>
+
+
+    <!-- SCANNER -->
+    <div class="card">
+
+        <h2>📷 Scanner un code-barres</h2>
+
+        <button onclick="startScanner()">
+            Démarrer la caméra
+        </button>
+
+        <button onclick="stopScanner()">
+            Arrêter la caméra
+        </button>
+
+        <div id="scanner
